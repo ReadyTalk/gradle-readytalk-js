@@ -1,0 +1,14 @@
+buildscript {
+  dependencies {
+    classpath 'com.readytalk.gradle:js:0.0.1-SNAPSHOT'
+  }
+}
+
+apply plugin: 'com.readytalk.gradle.js'
+
+node {
+  version = '0.10.32'
+  download = true
+  npmVersion = '2.1.4'
+}
+
