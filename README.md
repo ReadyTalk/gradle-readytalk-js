@@ -1,8 +1,9 @@
 gradle-readytalk-js
 ===================
 
-Conventions for ReadyTalk JavaScript projects using Node, Grunt, and Angular.
+[![Build Status](https://travis-ci.org/ReadyTalk/gradle-readytalk-js.svg?branch=master)](https://travis-ci.org/ReadyTalk/gradle-readytalk-js)
 
+Conventions for ReadyTalk JavaScript projects using Node, Grunt, and Angular.
 
 ## Goals ##
 The main goal of this project is to establish and maintain common conventions

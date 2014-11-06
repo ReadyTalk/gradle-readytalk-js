@@ -8,11 +8,14 @@ plugins {
   id 'com.jfrog.bintray' version "0.6"
 }
 
-group = 'com.readytalk.gradle'
+group = 'com.readytalk.gradle-plugins'
 
 def compatibilityVersion = 1.7
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
+
+ext.bintrayUser = project.hasProperty('bintrayUser') ? project.'bintrayUser' : null
+ext.bintralKey = project.hasProperty('bintrayKey') ? project.'bintrayKey' : null
 
 defaultTasks 'build'
 
@@ -66,9 +69,26 @@ publishing {
   }
 }
 
+artifactory {
+  contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+  publish {
+    repository {
+      repoKey = 'oss-snapshot-local'
+      username = bintrayUser
+      password = bintrayKey
+      maven = true
+      ivy {
+        ivyLayout = '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).pom'
+        artifactLayout = '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'
+        mavenCompatible = true
+      }
+    }
+  }
+}
+
 bintray {
-  user = project.hasProperty('bintrayUser') ? project.'bintrayUser' : 'DEV'
-  key = project.hasProperty('bintrayKey') ? project.'bintrayKey' : 'DEVKey'
+  user = bintrayUser
+  key = bintrayKey
 
   publications = ['mavenJava']
   publish = true
