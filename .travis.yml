@@ -1,1 +1,9 @@
 language: java
+
+env:
+  global:
+  - secure: QKGE85X6NL+kX0a9R989zwNDouUYac8MYtkfI9BBS8teBYJBMc/QSYjAGXZPOJR/VFaXFOTDwteYA08vIGKi5ASNJunOeHkCpyYUgxUQRj/NdwGs+c0z+raeS/L5UdAmRlCeZfmPe19HNXvW95plTLf5pv3VyRsENSQJkO1yJJk=
+  - secure: FdV94loU+g9w+rU5EeCQbYrxpxURvZokdWNqe/NjbfKYf7u0VaEjcVqVttTA13fkd6N31sGE1c9hXnAAQ+zSMtxr37rGDkIA3GotwDObifPs1awLoeR7kLt56U2BLyS8BkSD1HiLMxHAaJ9NUBLvqkGajzHAEQOBF4tx0rZ3jcI=
+
+script: "./gradlew artifactoryPublish -pbintrayUser=${BINTRAY_USER} -pbintrayKey=${BINTRAY_KEY}"
+
