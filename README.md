@@ -1,8 +1,8 @@
 gradle-readytalk-js
 ===================
 
-[![Build Status](https://travis-ci.org/ReadyTalk/gradle-readytalk-js.svg?branch=master)](https://travis-ci.org/ReadyTalk/gradle-readytalk-js)
-[![Download](https://api.bintray.com/packages/readytalk/plugins/gradle-readytalk-js/images/download.svg)](https://bintray.com/readytalk/plugins/gradle-readytalk-js/_latestVersion)
+[![Build Status](https://travis-ci.org/ReadyTalk/gradle-readytalk-js.svg?branch=master)] (https://travis-ci.org/ReadyTalk/gradle-readytalk-js)
+[![Download](https://api.bintray.com/packages/readytalk/plugins/gradle-readytalk-js/images/download.svg)] (https://bintray.com/readytalk/plugins/gradle-readytalk-js/_latestVersion)
 
 Conventions for ReadyTalk JavaScript projects using Node, Grunt, and Angular.
 
