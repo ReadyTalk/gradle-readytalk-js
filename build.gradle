@@ -67,6 +67,11 @@ ext.bintrayKey = project.hasProperty('bintrayKey') ? project.'bintrayKey' : null
 
 artifactory {
   contextUrl = "${artifactory_contextUrl}"
+
+  defaults {
+     publications 'mavenJava'
+  }
+
   publish {
     repository {
       repoKey = 'oss-snapshot-local'
