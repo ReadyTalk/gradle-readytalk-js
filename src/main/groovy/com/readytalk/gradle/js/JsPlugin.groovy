@@ -16,7 +16,7 @@ class JsPlugin implements Plugin<Project> {
     project.plugins.apply(GruntPlugin)
 
     project.tasks.withType(GruntTask) {
-      dependsOn(NpmInstallTask.NAME)
+      dependsOn NpmInstallTask.NAME
     }
 
     project.tasks."${GruntInstallTask.TASK_NAME}".dependsOn NpmInstallTask.NAME
