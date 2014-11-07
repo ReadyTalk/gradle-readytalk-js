@@ -2,9 +2,9 @@ gradle-readytalk-js
 ===================
 
 [![Build Status](https://travis-ci.org/ReadyTalk/gradle-readytalk-js.svg?branch=master)] (https://travis-ci.org/ReadyTalk/gradle-readytalk-js)
-[![Download](https://api.bintray.com/packages/readytalk/plugins/gradle-readytalk-js/images/download.svg)] (https://bintray.com/readytalk/plugins/gradle-readytalk-js/_latestVersion)
+[![Coverage Status](https://img.shields.io/coveralls/ReadyTalk/gradle-readytalk-js.svg)](https://coveralls.io/r/ReadyTalk/gradle-readytalk-js?branch=master)
 [![Project Status](http://stillmaintained.com/ReadyTalk/gradle-readytalk-js.png)](http://stillmaintained.com/ReadyTalk/gradle-readytalk-js)
-[![Coverage Status](https://img.shields.io/coveralls/ReadyTalk/gradle-readytalk-js.svg)](https://coveralls.io/r/ReadyTalk/gradle-readytalk-js)
+[![Download](https://api.bintray.com/packages/readytalk/plugins/gradle-readytalk-js/images/download.svg)] (https://bintray.com/readytalk/plugins/gradle-readytalk-js/_latestVersion)
 
 Conventions for ReadyTalk JavaScript projects using Node, Grunt, and Angular.
 
