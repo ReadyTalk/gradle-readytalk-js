@@ -23,6 +23,7 @@ class JsPlugin implements Plugin<Project> {
 
     project.node {
         version = '0.10.32'
+        npmVersion = '2.1.7'
         download = true
     }
 
