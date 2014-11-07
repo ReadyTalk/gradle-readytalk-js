@@ -12,6 +12,7 @@ ext {
   bintrayUser = System.env.'BINTRAY_USER'
   bintrayKey = System.env.'BINTRAY_KEY'
   isMaster = System.env.'TRAVIS_BRANCH' == "master"
+  isCI = System.env.'CI'
   compatibilityVersion = 1.7
 }
 
@@ -70,7 +71,7 @@ check.dependsOn 'jacocoTestReport'
 
 tasks.coveralls {
   dependsOn 'check'
-  onlyIf { isMaster }
+  onlyIf { isCI }
 }
 
 task ci {
