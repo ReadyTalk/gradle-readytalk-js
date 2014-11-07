@@ -62,12 +62,11 @@ publishing {
   }
 }
 
-artifactoryPublish {
-  publications 'mavenJava'
+ext {
+  bintrayUser = System.env.'BINTRAY_USER'
+  bintrayKey = System.env.'BINTRAY_KEY'
+  isMaster = System.env.'TRAVIS_BRANCH' == "master"
 }
-
-ext.bintrayUser = project.hasProperty('bintrayUser') ? project.'bintrayUser' : null
-ext.bintrayKey = project.hasProperty('bintrayKey') ? project.'bintrayKey' : null
 
 artifactory {
   contextUrl = "${artifactory_contextUrl}"
@@ -78,13 +77,13 @@ artifactory {
       username = bintrayUser
       password = bintrayKey
       maven = true
-      ivy {
-        ivyLayout = '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).pom'
-        artifactLayout = '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'
-        mavenCompatible = true
-      }
     }
   }
+}
+
+artifactoryPublish {
+  onlyIf { isMaster }
+  publications 'mavenJava'
 }
 
 bintray {
