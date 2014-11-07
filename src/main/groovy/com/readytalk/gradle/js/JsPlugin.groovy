@@ -26,7 +26,7 @@ class JsPlugin implements Plugin<Project> {
         download = true
     }
 
-    if (project.version.isEmpty() && project.file('package.json').exists()) {
+    if (project.version == 'unspecified' && project.file('package.json').exists()) {
       project.version = getPackageJsonVersion(project)
     }
   }

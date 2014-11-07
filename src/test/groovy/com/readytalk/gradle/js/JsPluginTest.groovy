@@ -44,4 +44,24 @@ class JsPluginTest extends Specification {
       project.tasks.withType(GruntTask)*.getDependsOn().flatten().contains(NpmInstallTask.NAME)
   }
 
+  def "Sets project version from package.json"() {
+    given: "a project with a package.json file."
+      // Create a package.json file
+      def packageJsonVersion = "1.0.0"
+      project.file('package.json') << """\
+{
+  "name": "test",
+  "version": "${packageJsonVersion}",
+}
+"""
+    expect: "version to be unspecified"
+      project.version == 'unspecified'
+
+    when: "plugin is applied"
+      project.apply plugin: 'com.readytalk.js'
+
+    then: "the gradle project version matches the version from package.json"
+      project.version == packageJsonVersion
+  }
+
 }
