@@ -17,17 +17,17 @@ class JsPluginTest extends Specification {
   }
 
   def "Applies node and grunt plugins"() {
-    expect:
+    expect: "a project without plugins applied"
       ! project.plugins.with {
         hasPlugin(BasePlugin)
         hasPlugin(GruntPlugin)
         hasPlugin(NodePlugin)
       }
 
-    when:
+    when: "js plugin is applied"
       project.apply plugin: 'com.readytalk.js'
 
-    then:
+    then: "project has other js plugins applied"
       project.plugins.with {
         hasPlugin(BasePlugin)
         hasPlugin(GruntPlugin)
@@ -36,11 +36,13 @@ class JsPluginTest extends Specification {
   }
 
   def "Sets up npmInstall dependency for GruntTasks"() {
-    when:
+    when: "js plugin is applied"
       project.apply plugin: 'com.readytalk.js'
+
+    and: "we add a grunt task"
       project.task('gruntBuild', type: GruntTask)
 
-    then:
+    then: "the grunt task depends on npmInstall"
       project.tasks.withType(GruntTask)*.getDependsOn().flatten().contains(NpmInstallTask.NAME)
   }
 
