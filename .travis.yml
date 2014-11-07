@@ -9,4 +9,4 @@ env:
 
 script:
   - ./gradlew --version
-  - ./gradlew build artifactoryPublish
+  - ./gradlew ci
