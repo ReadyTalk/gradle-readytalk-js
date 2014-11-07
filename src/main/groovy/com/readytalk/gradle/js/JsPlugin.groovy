@@ -19,7 +19,9 @@ class JsPlugin implements Plugin<Project> {
       dependsOn NpmInstallTask.NAME
     }
 
-    project.tasks."${GruntInstallTask.TASK_NAME}".dependsOn NpmInstallTask.NAME
+    project.tasks.withType(GruntInstallTask) {
+      dependsOn NpmInstallTask.NAME
+    }
 
     project.node {
         version = '0.10.32'
