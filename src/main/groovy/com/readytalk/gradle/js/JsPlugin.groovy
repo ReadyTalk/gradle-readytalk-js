@@ -2,6 +2,7 @@ package com.readytalk.gradle.js
 
 import com.moowork.gradle.grunt.GruntPlugin
 import com.moowork.gradle.grunt.GruntTask
+import com.moowork.gradle.grunt.GruntInstallTask
 import com.moowork.gradle.node.task.NpmInstallTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -17,6 +18,8 @@ class JsPlugin implements Plugin<Project> {
     project.tasks.withType(GruntTask) {
       dependsOn(NpmInstallTask.NAME)
     }
+
+    project.tasks."${GruntInstallTask.TASK_NAME}".dependsOn NpmInstallTask.NAME
 
     project.node {
         version = '0.10.32'
