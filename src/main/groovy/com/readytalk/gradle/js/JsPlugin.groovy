@@ -16,11 +16,11 @@ class JsPlugin implements Plugin<Project> {
     project.plugins.apply(GruntPlugin)
 
     project.tasks.withType(GruntTask) {
-      dependsOn NpmInstallTask.NAME
+      dependsOn NpmInstallTask.TASK_NAME, GruntInstallTask.TASK_NAME
     }
 
     project.tasks.withType(GruntInstallTask) {
-      dependsOn NpmInstallTask.NAME
+      dependsOn NpmInstallTask.TASK_NAME
     }
 
     project.node {

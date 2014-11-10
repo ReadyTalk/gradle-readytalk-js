@@ -1,5 +1,6 @@
 package com.readytalk.gradle.js
 
+import com.moowork.gradle.grunt.GruntInstallTask
 import com.moowork.gradle.grunt.GruntPlugin
 import com.moowork.gradle.grunt.GruntTask
 import com.moowork.gradle.node.NodePlugin
@@ -35,15 +36,17 @@ class JsPluginTest extends Specification {
       }
   }
 
-  def "Sets up npmInstall dependency for GruntTasks"() {
+  def "Sets up dependencies for GruntTasks"() {
     when: "js plugin is applied"
       project.apply plugin: 'com.readytalk.js'
 
     and: "we add a grunt task"
       project.task('gruntBuild', type: GruntTask)
 
-    then: "the grunt task depends on npmInstall"
-      project.tasks.withType(GruntTask)*.getDependsOn().flatten().contains(NpmInstallTask.NAME)
+    then: "the grunt task depends on npmInstall and gruntInstall"
+      def dependencies = project.tasks.withType(GruntTask)*.getDependsOn().flatten()
+      dependencies.contains(NpmInstallTask.TASK_NAME)
+      dependencies.contains(GruntInstallTask.TASK_NAME)
   }
 
   def "Sets project version from package.json"() {
