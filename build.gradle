@@ -34,6 +34,21 @@ dependencies {
   }
 }
 
+plugindev {
+  pluginImplementationClass 'com.readytalk.gradle.js.JsPlugin'
+  pluginDescription 'Gradle plugin for ReadyTalk-style JavaScript projects.'
+  pluginLicenses 'MIT'
+  pluginTags 'java', 'gradle', 'groovy', 'node', 'javascript'
+  authorId 'dougborg'
+  authorName 'Douglas Borg'
+  authorEmail 'dougborg@dougborg.org'
+  projectUrl = 'http://oss.readytalk.com/gradle-readytalk-js'
+  projectIssuesUrl = 'https://github.com/ReadyTalk/gradle-readytalk-js/issues'
+  projectVcsUrl = 'https://github.com/ReadyTalk/gradle-readytalk-js.git'
+  projectInceptionYear '2014'
+  done() // do not omit this
+}
+
 tasks.withType(Test) {
   testLogging {
     exceptionFormat "full"
@@ -79,21 +94,6 @@ artifactory {
       maven = true
     }
   }
-}
-
-plugindev {
-  pluginImplementationClass 'com.readytalk.gradle.js.JsPlugin'
-  pluginDescription 'Gradle plugin for ReadyTalk-style JavaScript projects.'
-  pluginLicenses 'MIT'
-  pluginTags 'java', 'gradle', 'groovy', 'node', 'javascript'
-  authorId 'dougborg'
-  authorName 'Douglas Borg'
-  authorEmail 'dougborg@dougborg.org'
-  projectUrl = 'http://oss.readytalk.com/gradle-readytalk-js'
-  projectIssuesUrl = 'https://github.com/ReadyTalk/gradle-readytalk-js/issues'
-  projectVcsUrl = 'https://github.com/ReadyTalk/gradle-readytalk-js.git'
-  projectInceptionYear '2014'
-  done() // do not omit this
 }
 
 bintray {
