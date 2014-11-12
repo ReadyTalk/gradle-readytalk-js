@@ -101,3 +101,5 @@ bintray {
   key = bintrayKey
   pkg.repo = 'maven'
 }
+
+wrapper.gradleVersion = '2.2'
