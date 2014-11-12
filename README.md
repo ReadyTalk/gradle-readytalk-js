@@ -35,15 +35,15 @@ convention plugins in much the same way the out-of-the-box `java-base` and
 `java` Gradle plugins are set up.
 
 ## Usage ##
-Releases of this plugin are hosted on [BinTray][] and are available in Gradle
+Releases of this plugin are hosted on [Bintray][] and are available in Gradle
 via the [jCenter][] repository. Development SNAPSHOTs for every commit and
 successful build are published to the [OJO][] repostory.
 
-[BinTray]: https://bintray.com/readytalk/plugins/gradle-readytalk-js
+[Bintray]: https://bintray.com/readytalk/plugins/gradle-readytalk-js
 [jCenter]: https://bintray.com/bintray/jcenter
 [OJO]: https://oss.jfrog.org
 
-Setup the plugin like this:
+If you are using Gradle 2.1 or newer, apply the plugin like this:
 
 ```groovy
 plugins {
