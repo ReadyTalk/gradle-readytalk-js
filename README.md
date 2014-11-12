@@ -55,16 +55,16 @@ Or using the old (pre 2.1) way:
 
 ```groovy
 buildscript {
-	repositories {
-		jcenter()
+  repositories {
+    jcenter()
     // If you want to use a SNAPSHOT build, add the OJO repository:
     maven {
       name 'JFrog OSS snapshot repo'
       url  'https://oss.jfrog.org/oss-snapshot-local/'
     }
-	}
-	dependencies {
-		classpath 'com.readytalk.gradle:gradle-readytalk-js:0.1.0'
+  }
+  dependencies {
+    classpath 'com.readytalk.gradle:gradle-readytalk-js:0.1.0'
   }
 }
 ```
