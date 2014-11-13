@@ -34,22 +34,102 @@
         <h1>
 <a id="gradle-readytalk-js" class="anchor" href="#gradle-readytalk-js" aria-hidden="true"><span class="octicon octicon-link"></span></a>gradle-readytalk-js</h1>
 
-<p>Conventions for ReadyTalk JavaScript projects using Node, Grunt, and Angular.</p>
+<p><a href="http://goo.gl/k3KEE2"><img src="http://goo.gl/L6U01H" alt="Build Status"></a>
+<a href="http://goo.gl/Q8wikd"><img src="http://goo.gl/7uC90R" alt="Coverage Status"></a>
+<a href="http://goo.gl/qvTAvz"><img src="http://goo.gl/chOh6L" alt="Project Status"></a>
+<a href="http://goo.gl/93tPwk"><img src="http://goo.gl/pPDj6N" alt="License"></a>
+<a href="http://goo.gl/wOAuo0"><img src="http://goo.gl/OFVFVx" alt="Download"></a></p>
+
+<p>Conventions for ReadyTalk JavaScript projects using <a href="http://nodejs.org/">node.js</a> and <a href="http://gruntjs.com/">Grunt</a>.</p>
 
 <h2>
 <a id="goals" class="anchor" href="#goals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goals</h2>
 
 <p>The main goal of this project is to establish and maintain common conventions
-and functionality for ReadyTalk JavaScript projects. The gradle-readytalk-js
-plugin will wrap existing node.js-related and other ReadyTalk Gradle plugins
-to provide:</p>
+and functionality for ReadyTalk JavaScript projects. The <a href="http://oss.readytalk.com/gradle-readytalk-js/">gradle-readytalk-js</a>
+plugin will wrap existing node.js-related plugins to provide:</p>
 
 <ul>
-<li>Management of the version of node and npm the build runs in.</li>
+<li>Management of the version of the <code>node</code> and <code>npm</code> environment builds run in.</li>
 <li>A single entry point for the CI build/test/publish process.</li>
-<li>Functionality and conventions for application artifact publication.</li>
-<li>Ability to publish node.js libraries via npm.</li>
+<li>Conventions around the layout of ReadyTalk JavaScript projects.</li>
 </ul>
+
+<p>Most of the functionality this plugin applies is actually provided by two other
+plugins:</p>
+
+<ul>
+<li><a href="https://github.com/srs/gradle-node-plugin">Gradle Node Plugin</a></li>
+<li><a href="https://github.com/srs/gradle-grunt-plugin">Gradle Grunt Plugin</a></li>
+</ul>
+
+<p>The long-term vision of this project is to merge all or most conventions and
+functionality contained here upstream and reorganize those projects into base /
+convention plugins in much the same way the out-of-the-box <code>java-base</code> and
+<code>java</code> Gradle plugins are set up.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Releases of this plugin are hosted on <a href="https://bintray.com/readytalk/plugins/gradle-readytalk-js">Bintray</a> and are available in Gradle
+via the <a href="https://bintray.com/bintray/jcenter">jCenter</a> repository. Development SNAPSHOTs for every commit and
+successful build are published to the <a href="https://oss.jfrog.org">OJO</a> repostory.</p>
+
+<p>If you are using Gradle 2.1 or newer, apply the plugin like this:</p>
+
+<div class="highlight highlight-groovy"><pre>plugins {
+  id <span class="pl-s1"><span class="pl-pds">'</span>com.readytalk.js<span class="pl-pds">'</span></span> version <span class="pl-s1"><span class="pl-pds">'</span>0.1.0<span class="pl-pds">'</span></span>
+}</pre></div>
+
+<p>Or using the old (pre 2.1) way:</p>
+
+<div class="highlight highlight-groovy"><pre>buildscript {
+  repositories {
+    jcenter()
+    <span class="pl-c"><span class="pl-pdc">//</span> If you want to use a SNAPSHOT build, add the OJO repository:</span>
+    maven {
+      name <span class="pl-s1"><span class="pl-pds">'</span>JFrog OSS snapshot repo<span class="pl-pds">'</span></span>
+      url  <span class="pl-s1"><span class="pl-pds">'</span>https://oss.jfrog.org/oss-snapshot-local/<span class="pl-pds">'</span></span>
+    }
+  }
+  dependencies {
+    classpath <span class="pl-s1"><span class="pl-pds">'</span>com.readytalk.gradle:gradle-readytalk-js:0.1.0<span class="pl-pds">'</span></span>
+  }
+}</pre></div>
+
+<p>Include the plugin in your build.gradle file like this:</p>
+
+<div class="highlight highlight-groovy"><pre>apply <span class="pl-c1">plugin</span>: <span class="pl-s1"><span class="pl-pds">'</span>com.readytalk.js<span class="pl-pds">'</span></span></pre></div>
+
+<h2>
+<a id="philosophy-on-gradle--grunt-interaction" class="anchor" href="#philosophy-on-gradle--grunt-interaction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Philosophy on Gradle / Grunt Interaction</h2>
+
+<p>It is strongly suggested you minimize the amount of interaction between Gradle
+and the other tools. For example, don't use Gradle to manage the task
+dependencies of the Grunt build. Instead, try to have only one or two Grunt
+tasks called from the Gradle build and have the Grunt build take care of itself.</p>
+
+<p>Future versions of this plugin will establish some conventional tasks and task
+dependencies once some best-practices have been sussed out. The probable
+direction will be to have a <code>gruntBuild</code> task and a <code>gruntIntegTest</code> task
+configured properly with inputs and outputs for up-to-date checks.</p>
+
+<p>The <code>gruntBuild</code> task will be responsible for creating a fully-releasable
+production application distribution and running all unit tests, static analysis,
+and any other quality checks which:</p>
+
+<ul>
+<li>Execute quickly (<code>gruntBuild</code> should take &lt; 5 minutes)</li>
+<li>Do not require the application to be deployed.</li>
+<li>Do not rely on any external resources.</li>
+</ul>
+
+<p>The <code>gruntIntegTest</code> task will be responsible for running any sorts of test
+which  require application deployment, external resources, or longer-running
+tests. The <code>gruntIntegTest</code> task should just run the tests and allow other
+parts of the Gradle build to bring up VMs or Docker containers or other testing
+infrastructure as necessary and clean them up once the <code>gruntIntegTest</code> task
+completes execution.</p>
       </section>
     </div>
 
