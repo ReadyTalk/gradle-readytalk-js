@@ -99,7 +99,10 @@ artifactory {
 bintray {
   user = bintrayUser
   key = bintrayKey
-  pkg.repo = 'maven'
+  pkg {
+    userOrg = 'readytalk'
+    repo = 'plugins'
+  }
 }
 
 wrapper.gradleVersion = '2.2'
