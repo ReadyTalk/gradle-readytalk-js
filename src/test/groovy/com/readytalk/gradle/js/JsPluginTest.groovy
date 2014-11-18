@@ -43,10 +43,10 @@ class JsPluginTest extends Specification {
     and: "we add a grunt task"
       project.task('gruntBuild', type: GruntTask)
 
-    then: "the grunt task depends on npmInstall and gruntInstall"
+    then: "the grunt task depends on npmInstall and installGrunt"
       def dependencies = project.tasks.withType(GruntTask)*.getDependsOn().flatten()
-      dependencies.contains(NpmInstallTask.TASK_NAME)
-      dependencies.contains(GruntInstallTask.TASK_NAME)
+      dependencies.contains('npmInstall')
+      dependencies.contains('installGrunt')
   }
 
   def "Sets project version from package.json"() {
