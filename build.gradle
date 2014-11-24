@@ -9,6 +9,7 @@ plugins {
 
 ext {
   isMaster = System.env.'TRAVIS_BRANCH' == "master"
+  isRelease = System.env.'TRAVIS_TAG' ==~ /v\d+\.\d+\.\d+/
   isCI = System.env.'CI'
 }
 
@@ -72,7 +73,7 @@ tasks.coveralls {
 }
 
 task ci {
-  dependsOn 'build', 'coveralls', 'artifactoryPublish'
+  dependsOn 'build', 'coveralls', 'artifactoryPublish', 'bintrayUpload'
 }
 
 artifactoryPublish {
@@ -80,6 +81,8 @@ artifactoryPublish {
   mustRunAfter 'build'
   publications 'plugin'
 }
+
+bintrayUpload.onlyIf { isRelease }
 
 artifactory {
   contextUrl = "http://oss.jfrog.org/artifactory"
@@ -100,6 +103,7 @@ bintray {
   pkg {
     userOrg = 'readytalk'
     repo = 'plugins'
+    version.vcsTag = System.env.'TRAVIS_TAG'
   }
 }
 
