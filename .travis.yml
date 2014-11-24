@@ -4,8 +4,7 @@ jdk: oraclejdk7
 
 env:
   global:
-  - secure: g6lprrQRtcuGRK1Tbx/ahoHdUIgpVo4LAVHUtgshKT2sgS5p3cufgoS1rDIvPziVD8RMoLWM2FaC9a2ZS+32rGLG2jDkUu6ZqaDJxaYDphdqiTZ1twIvQ4YpogAYAtsh02tawkZsH7kfeOXr8Y5p1eqOziqAdlBmNNhtrnu6fSI=
-  - secure: gNhzUD3xyMKXCrgvTBvMxzQCOoVT6YCKQFQ2QQyWuh8/yU9INySVCza7tA1EepXlpgZrsLe0Hp5s3I2fXFWSzuX+PuUw7sS5zaviuzo+XkBESbC/SuvH1T0UyvoIXg6FIbEojqgvQpWerAlDKmIvwUZ/PHmT3iuaEZgo8y1w9Mo=
+  - secure: EHI9YENiyoZEVCbBs+Rch8GuLHNnAJj+8HfyeFBKzktLeenT27QHhpt7yoNcs2p8zfyGvYTJ+p01hV8Fvcogwq+oSYnyMqpR0azmK7eZ6VyzRv7Ei/XaNr7seTTC7RXKWXckslf89U6b3QRS4Dpc4iq4jbaFCZObXikQWFlqy5k=
+  - secure: HoxowDZkH3r5aGMX2yjG04f8R2R+vKB3IQRbku8KxvhILhGqnoL6lky1QRFUXhUZD9nvy18cztWjgipbD7BukoaSh2MP71DTea/sTbNK1fHxqKVc8qixJ3IWX4KdNqG0rV5seVZ+zjZ6CnQwawhtIsq3a6s2EzkdfDqM5hqFvlA=
 
 script: "./gradlew ci"
-
