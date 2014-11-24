@@ -8,8 +8,6 @@ plugins {
 }
 
 ext {
-  bintrayUser = System.env.'BINTRAY_USER'
-  bintrayKey = System.env.'BINTRAY_KEY'
   isMaster = System.env.'TRAVIS_BRANCH' == "master"
   isCI = System.env.'CI'
 }
