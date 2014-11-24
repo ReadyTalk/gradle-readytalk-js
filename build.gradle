@@ -107,4 +107,4 @@ bintray {
   }
 }
 
-wrapper.gradleVersion = '2.2'
+wrapper.gradleVersion = '2.2.1'
