@@ -1,3 +1,9 @@
+buildscript {
+  dependencies {
+    classpath 'com.readytalk.gradle:gradle-readytalk-ci:0.1.0'
+  }
+}
+
 plugins {
   id 'groovy'
   id 'jacoco'
@@ -7,10 +13,11 @@ plugins {
   id 'com.github.kt3k.coveralls' version "2.0.1"
 }
 
+apply plugin: 'com.readytalk.ci'
+
 ext {
-  isMaster = System.env.'TRAVIS_BRANCH' == "master"
-  isRelease = System.env.'TRAVIS_TAG' ==~ /v\d+\.\d+\.\d+/
-  isCI = System.env.'CI'
+  isMaster = info.travisBranch == "master" && info.travisPullRequest == 'false'
+  isRelease = info.travisTag ==~ /v\d+\.\d+\.\d+/
 }
 
 defaultTasks 'build'
@@ -48,16 +55,6 @@ plugindev {
   done() // do not omit this
 }
 
-tasks.withType(Test) {
-  testLogging {
-    exceptionFormat "full"
-  }
-
-  if (project.hasProperty('stdOut')) {
-    showStandardStreams = true
-  }
-}
-
 jacocoTestReport {
   reports {
     xml.enabled = true // coveralls plugin depends on xml format report
@@ -69,19 +66,12 @@ check.dependsOn 'jacocoTestReport'
 
 tasks.coveralls {
   dependsOn 'check'
-  onlyIf { isCI }
+  onlyIf { info.isCI }
 }
 
-task ci {
-  dependsOn 'build', 'coveralls', 'artifactoryPublish', 'bintrayUpload'
-}
+tasks.ci.dependsOn tasks.coveralls
 
-artifactoryPublish {
-  onlyIf { isMaster }
-  mustRunAfter 'build'
-  publications 'plugin'
-}
-
+artifactoryPublish.onlyIf { isMaster }
 bintrayUpload.onlyIf { isRelease }
 
 artifactory {
@@ -103,7 +93,7 @@ bintray {
   pkg {
     userOrg = 'readytalk'
     repo = 'plugins'
-    version.vcsTag = System.env.'TRAVIS_TAG'
+    version.vcsTag = info.travisTag
   }
 }
 

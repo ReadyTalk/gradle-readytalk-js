@@ -8,3 +8,5 @@ env:
   - secure: HoxowDZkH3r5aGMX2yjG04f8R2R+vKB3IQRbku8KxvhILhGqnoL6lky1QRFUXhUZD9nvy18cztWjgipbD7BukoaSh2MP71DTea/sTbNK1fHxqKVc8qixJ3IWX4KdNqG0rV5seVZ+zjZ6CnQwawhtIsq3a6s2EzkdfDqM5hqFvlA=
 
 script: "./gradlew ci"
+
+sudo: false
