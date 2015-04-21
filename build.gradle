@@ -5,12 +5,17 @@ plugins {
   id 'nu.studer.plugindev' version '1.0.3'
   id 'com.jfrog.artifactory' version '3.0.1'
   id 'com.github.kt3k.coveralls' version '2.0.1'
-  id 'com.readytalk.ci' version '0.2.0'
+  id 'com.readytalk.ci' version '0.2.3'
 }
 
 ext {
-  isMaster = buildEnv.travisBranch == "master" && buildEnv.travisPullRequest == 'false'
   isRelease = buildEnv.travisTag ==~ /v\d+\.\d+\.\d+/
+  isMaster = buildEnv.travisBranch == "master" && buildEnv.travisPullRequest == 'false'
+  isReleaseBranch = buildEnv.travisBranch ==~ /release_\d+\.\d+\.\d+/
+}
+
+if (!isRelease) {
+  version = version + '-SNAPSHOT'
 }
 
 defaultTasks 'build'
@@ -20,13 +25,12 @@ repositories {
     name 'JFrog OSS snapshot repo'
     url  'https://oss.jfrog.org/oss-snapshot-local/'
   }
-  jcenter()
 }
 
 dependencies {
   compile gradleApi()
-  compile 'com.moowork.gradle:gradle-node-plugin:0.8'
-  compile 'com.moowork.gradle:gradle-grunt-plugin:0.6'
+  compile 'com.moowork.gradle:gradle-node-plugin:0.9'
+  compile 'com.moowork.gradle:gradle-grunt-plugin:0.9'
 
   testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
     exclude module: 'groovy-all'
@@ -64,7 +68,7 @@ tasks.coveralls {
 
 tasks.ci.dependsOn tasks.coveralls
 
-artifactoryPublish.onlyIf { isMaster }
+artifactoryPublish.onlyIf { isMaster || isReleaseBranch }
 bintrayUpload.onlyIf { isRelease }
 
 artifactory {
@@ -83,6 +87,7 @@ artifactory {
 bintray {
   user = bintrayUser
   key = bintrayKey
+  dryRun = !isRelease
   pkg {
     userOrg = 'readytalk'
     repo = 'plugins'
@@ -90,4 +95,4 @@ bintray {
   }
 }
 
-wrapper.gradleVersion = '2.2.1'
+wrapper.gradleVersion = '2.3'
