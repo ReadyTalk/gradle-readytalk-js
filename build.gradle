@@ -88,7 +88,10 @@ tasks.coveralls {
 tasks.ci.dependsOn tasks.coveralls
 
 artifactoryPublish.onlyIf { isMaster || isReleaseBranch }
-publishPlugins.onlyIf { isRelease }
+
+if (isRelease) {
+  publish.dependsOn 'publishPlugins'
+}
 
 artifactory {
   contextUrl = "http://oss.jfrog.org/artifactory"
