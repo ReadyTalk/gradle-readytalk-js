@@ -27,6 +27,7 @@ class JsPlugin implements Plugin<Project> {
         version = '0.10.32'
         npmVersion = '2.1.7'
         download = true
+        workDir = project.file("${project.buildDir}/nodejs")
     }
 
     if (project.version == 'unspecified' && project.file('package.json').exists()) {

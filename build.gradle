@@ -2,50 +2,54 @@ plugins {
   id 'groovy'
   id 'jacoco'
   id 'java-gradle-plugin'
-  id 'nu.studer.plugindev' version '1.0.3'
+  id 'com.gradle.plugin-publish' version '0.9.0'
   id 'com.jfrog.artifactory' version '3.0.1'
   id 'com.github.kt3k.coveralls' version '2.0.1'
-  id 'com.readytalk.ci' version '0.2.0'
+  id 'com.readytalk.ci' version '0.2.3'
 }
 
 ext {
-  isMaster = buildEnv.travisBranch == "master" && buildEnv.travisPullRequest == 'false'
   isRelease = buildEnv.travisTag ==~ /v\d+\.\d+\.\d+/
+  isMaster = buildEnv.travisBranch == "master" && buildEnv.travisPullRequest == 'false'
+  isReleaseBranch = buildEnv.travisBranch ==~ /release_\d+\.\d+\.\d+/
+}
+
+if (!isRelease) {
+  version = version + '-SNAPSHOT'
 }
 
 defaultTasks 'build'
 
 repositories {
+  jcenter()
   maven {
     name 'JFrog OSS snapshot repo'
     url  'https://oss.jfrog.org/oss-snapshot-local/'
   }
-  jcenter()
 }
 
 dependencies {
   compile gradleApi()
-  compile 'com.moowork.gradle:gradle-node-plugin:0.8'
-  compile 'com.moowork.gradle:gradle-grunt-plugin:0.6'
+  compile 'com.moowork.gradle:gradle-node-plugin:0.9'
+  compile 'com.moowork.gradle:gradle-grunt-plugin:0.9'
 
   testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
     exclude module: 'groovy-all'
   }
 }
 
-plugindev {
-  pluginImplementationClass 'com.readytalk.gradle.js.JsPlugin'
-  pluginDescription 'Gradle plugin for ReadyTalk-style JavaScript projects.'
-  pluginLicenses 'MIT'
-  pluginTags 'java', 'gradle', 'groovy', 'node', 'javascript'
-  authorId 'dougborg'
-  authorName 'Douglas Borg'
-  authorEmail 'dougborg@dougborg.org'
-  projectUrl = 'http://oss.readytalk.com/gradle-readytalk-js'
-  projectIssuesUrl = 'https://github.com/ReadyTalk/gradle-readytalk-js/issues'
-  projectVcsUrl = 'https://github.com/ReadyTalk/gradle-readytalk-js.git'
-  projectInceptionYear '2014'
-  done() // do not omit this
+pluginBundle {
+  website = 'http://oss.readytalk.com/gradle-readytalk-js'
+  vcsUrl = 'https://github.com/ReadyTalk/gradle-readytalk-js.git'
+  description = 'Gradle plugin for ReadyTalk-style JavaScript projects.'
+
+  plugins {
+    readytalkJsPlugin {
+      id = 'com.readytalk.js'
+      displayName = 'ReadyTalk JS Plugin'
+      tags = [ 'java', 'gradle', 'groovy', 'node', 'javascript' ]
+    }
+  }
 }
 
 jacocoTestReport {
@@ -64,8 +68,8 @@ tasks.coveralls {
 
 tasks.ci.dependsOn tasks.coveralls
 
-artifactoryPublish.onlyIf { isMaster }
-bintrayUpload.onlyIf { isRelease }
+artifactoryPublish.onlyIf { isMaster || isReleaseBranch }
+publishPlugins.onlyIf { isRelease }
 
 artifactory {
   contextUrl = "http://oss.jfrog.org/artifactory"
@@ -80,14 +84,4 @@ artifactory {
   }
 }
 
-bintray {
-  user = bintrayUser
-  key = bintrayKey
-  pkg {
-    userOrg = 'readytalk'
-    repo = 'plugins'
-    version.vcsTag = buildEnv.travisTag
-  }
-}
-
-wrapper.gradleVersion = '2.2.1'
+wrapper.gradleVersion = '2.3'
