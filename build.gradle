@@ -79,6 +79,7 @@ jacocoTestReport {
 }
 
 check.dependsOn 'jacocoTestReport'
+publish.mustRunAfter check
 
 tasks.coveralls {
   dependsOn 'check'

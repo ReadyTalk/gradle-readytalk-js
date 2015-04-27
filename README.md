@@ -3,7 +3,6 @@ gradle-readytalk-js
 
 [![Build Status](http://goo.gl/L6U01H)](http://goo.gl/k3KEE2)
 [![Coverage Status](http://goo.gl/7uC90R)](http://goo.gl/Q8wikd)
-[![Project Status](http://goo.gl/chOh6L)](http://goo.gl/qvTAvz)
 [![License](http://goo.gl/pPDj6N)](http://goo.gl/93tPwk)
 [![Download](http://goo.gl/OFVFVx)](http://goo.gl/wOAuo0)
 
@@ -35,45 +34,35 @@ convention plugins in much the same way the out-of-the-box `java-base` and
 `java` Gradle plugins are set up.
 
 ## Usage ##
-Releases of this plugin are hosted on [Bintray][] and are available in Gradle
-via the [jCenter][] repository. Development SNAPSHOTs for every commit and
-successful build are published to the [OJO][] repostory.
+Releases of this plugin are hosted on [Gradle's Plugin Portal][]. See the
+[ReadyTalk JS Plugin][] page for more information on how to apply the plugin.
 
-[Bintray]: https://bintray.com/readytalk/plugins/gradle-readytalk-js
-[jCenter]: https://bintray.com/bintray/jcenter
-[OJO]: https://oss.jfrog.org
+[Gradle's Plugin Portal]: https://plugins.gradle.org
+[ReadyTalk JS Plugin]: https://plugins.gradle.org/plugin/com.readytalk.js
 
-If you are using Gradle 2.1 or newer, apply the plugin like this:
-
-```groovy
-plugins {
-  id 'com.readytalk.js' version '0.1.0'
-}
-```
-
-Or using the old (pre 2.1) way:
+### Development SNAPSHOTs ###
+Development `SNAPSHOT`s for every commit and successful build on the master
+branch are published to the [OJO][] repostory. To use a `SNAPSHOT` version,
+you will need to set up the OJO repository and use the 'classic' method to
+apply the plugin.
 
 ```groovy
 buildscript {
   repositories {
-    jcenter()
-    // If you want to use a SNAPSHOT build, add the OJO repository:
     maven {
       name 'JFrog OSS snapshot repo'
       url  'https://oss.jfrog.org/oss-snapshot-local/'
     }
   }
   dependencies {
-    classpath 'com.readytalk.gradle:gradle-readytalk-js:0.1.0'
+    classpath "com.readytalk.gradle:gradle-readytalk-js:0.1.4-SNAPSHOT"
   }
 }
+
+apply plugin: "com.readytalk.js"
 ```
 
-Include the plugin in your build.gradle file like this:
-
-```groovy
-apply plugin: 'com.readytalk.js'
-```
+[OJO]: https://oss.jfrog.org
 
 ## Philosophy on Gradle / Grunt Interaction ##
 It is strongly suggested you minimize the amount of interaction between Gradle
