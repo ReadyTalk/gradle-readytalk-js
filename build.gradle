@@ -108,4 +108,4 @@ artifactory {
   }
 }
 
-wrapper.gradleVersion = '2.3'
+wrapper.gradleVersion = '2.4-rc-1'
