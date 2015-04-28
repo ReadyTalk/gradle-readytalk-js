@@ -86,12 +86,13 @@ tasks.coveralls {
   onlyIf { buildEnv.isCI }
 }
 
-tasks.ci.dependsOn tasks.coveralls
+tasks.ci.dependsOn tasks.coveralls, tasks.publish
 
 artifactoryPublish.onlyIf { isMaster || isReleaseBranch }
 
 if (isRelease) {
-  publish.dependsOn 'publishPlugins'
+  tasks.publish.dependsOn 'publishPlugins'
+  publishPlugins.mustRunAfter 'check'
 }
 
 artifactory {
