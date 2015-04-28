@@ -7,5 +7,5 @@ env:
   - secure: LV2qyNQyknXhmkFomHwxKdOp0ky9piAkeJdr57+rnLXuhQ40tpevYE80IHrkDO1jpScB7rL7HRRNQTBGx9bldm3wfI33TDofyTbREdsNq0ssXQ0FM7zF7dzFuMHcwCSd1NZwWBm6Hwz3vCWY6WhOjfMHTEXJCgLPvz5h2i22F5g=
   - secure: FJPwFSbuU6o6Qhl74ktWs0VYPh3brDiqR53ab7H3brQB8DGhg9k0e9yCTC38OuxF/lEMmqIOaS0bbFmiBHzj0xge+mlIvhBm80F5VdOlwfQEQPZb+PTaKGhUPi5xu7u4QCqZz/riFlPLygLDwEN1J8E5M2th/MPj2ZyYsFE/FAA=
 install: true
-script: "./gradlew ci -Pgradle.publish.key=${GRADLE_PUBLISH_KEY} -Pgradle.publish.secret=${GRADLE_PUBLISH_SECRET}"
+script: "./gradlew ci -Dgradle.publish.key=${GRADLE_PUBLISH_KEY} -Dgradle.publish.secret=${GRADLE_PUBLISH_SECRET}"
 sudo: false
