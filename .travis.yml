@@ -4,8 +4,8 @@ env:
   global:
   - secure: EHI9YENiyoZEVCbBs+Rch8GuLHNnAJj+8HfyeFBKzktLeenT27QHhpt7yoNcs2p8zfyGvYTJ+p01hV8Fvcogwq+oSYnyMqpR0azmK7eZ6VyzRv7Ei/XaNr7seTTC7RXKWXckslf89U6b3QRS4Dpc4iq4jbaFCZObXikQWFlqy5k=
   - secure: HoxowDZkH3r5aGMX2yjG04f8R2R+vKB3IQRbku8KxvhILhGqnoL6lky1QRFUXhUZD9nvy18cztWjgipbD7BukoaSh2MP71DTea/sTbNK1fHxqKVc8qixJ3IWX4KdNqG0rV5seVZ+zjZ6CnQwawhtIsq3a6s2EzkdfDqM5hqFvlA=
-  - secure: UbDRGtGC5HudWlWViu2emSZ4DsrgjVEQ1G7bAn0bbTkImE2SZF34zbNKYFRM66kQZQm16FpH3b6EvQnyWFw2/47a5gezQs8+pg+L5MSwGeqS693n4xu1EsSw+la6+lG/jFem2KnDZ3M1a7hRnC9ie0IxjAVBX6vGxcGzuuax0lc=
-  - secure: KbIiSiENmN1BJwxNv6McUd+lm2sJoH/pq8CAAmkvBn9Gdhcs0OKSPZIWCh5OVdZ3qpnhUL+d/oS71BTgGbUXcjMBWUKn43AtzAnejSUhO/ld66XsUzY+NyNyNuI8qzPdVbqXixSF6//t7YYbIuidgR+C/LFWweEww6hL6t+y5WE=
+  - secure: LV2qyNQyknXhmkFomHwxKdOp0ky9piAkeJdr57+rnLXuhQ40tpevYE80IHrkDO1jpScB7rL7HRRNQTBGx9bldm3wfI33TDofyTbREdsNq0ssXQ0FM7zF7dzFuMHcwCSd1NZwWBm6Hwz3vCWY6WhOjfMHTEXJCgLPvz5h2i22F5g=
+  - secure: FJPwFSbuU6o6Qhl74ktWs0VYPh3brDiqR53ab7H3brQB8DGhg9k0e9yCTC38OuxF/lEMmqIOaS0bbFmiBHzj0xge+mlIvhBm80F5VdOlwfQEQPZb+PTaKGhUPi5xu7u4QCqZz/riFlPLygLDwEN1J8E5M2th/MPj2ZyYsFE/FAA=
 install: true
 script: "./gradlew ci -Pgradle.publish.key=${GRADLE_PUBLISH_KEY} -Pgradle.publish.secret=${GRADLE_PUBLISH_SECRET}"
 sudo: false
