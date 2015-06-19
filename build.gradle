@@ -4,20 +4,13 @@ plugins {
   id 'java-gradle-plugin'
   id 'maven-publish'
   id 'com.gradle.plugin-publish' version '0.9.0'
-  id 'com.jfrog.artifactory' version '3.0.1'
-  id 'com.github.kt3k.coveralls' version '2.3.1'
-  id 'com.readytalk.ci' version '0.3.0'
+  id 'com.jfrog.artifactory' version '3.1.1'
+  id 'com.github.kt3k.coveralls' version '2.4.0'
+  id 'com.readytalk.ci' version '0.5.1'
+  id 'nebula.info' version '2.2.2'
 }
 
-ext {
-  isRelease = buildEnv.travisTag ==~ /v\d+\.\d+\.\d+/
-  isMaster = buildEnv.travisBranch == "master" && buildEnv.travisPullRequest == 'false'
-  isReleaseBranch = buildEnv.travisBranch ==~ /release_\d+\.\d+\.\d+/
-}
-
-if (!isRelease) {
-  version = version + '-SNAPSHOT'
-}
+apply plugin: 'com.readytalk.ci.version.snapshot'
 
 defaultTasks 'build'
 
@@ -35,7 +28,7 @@ dependencies {
   compile 'com.moowork.gradle:gradle-node-plugin:0.9'
   compile 'com.moowork.gradle:gradle-grunt-plugin:0.9'
 
-  testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
+  testCompile('org.spockframework:spock-core:1.0-groovy-2.3') {
     exclude module: 'groovy-all'
   }
 }
@@ -83,17 +76,12 @@ publish.mustRunAfter check
 
 tasks.coveralls {
   dependsOn 'check'
-  onlyIf { buildEnv.isCI }
+  onlyIf { buildEnv.ci }
 }
 
-tasks.ci.dependsOn tasks.coveralls, tasks.publish
+tasks.ci.dependsOn tasks.coveralls
 
-artifactoryPublish.onlyIf { isMaster || isReleaseBranch }
-
-if (isRelease) {
-  tasks.publish.dependsOn 'publishPlugins'
-  publishPlugins.mustRunAfter 'check'
-}
+artifactoryPublish.onlyIf { ! buildEnv.release }
 
 artifactory {
   contextUrl = "http://oss.jfrog.org/artifactory"
@@ -108,4 +96,4 @@ artifactory {
   }
 }
 
-wrapper.gradleVersion = '2.4-rc-1'
+wrapper.gradleVersion = '2.4'
