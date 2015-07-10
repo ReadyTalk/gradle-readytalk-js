@@ -3,12 +3,16 @@ package com.readytalk.gradle.js
 import com.moowork.gradle.grunt.GruntInstallTask
 import com.moowork.gradle.grunt.GruntPlugin
 import com.moowork.gradle.grunt.GruntTask
+import com.moowork.gradle.gulp.GulpInstallTask
+import com.moowork.gradle.gulp.GulpPlugin
+import com.moowork.gradle.gulp.GulpTask
 import com.moowork.gradle.node.NodePlugin
 import com.moowork.gradle.node.task.NpmInstallTask
-import spock.lang.Specification
 import org.gradle.api.*
 import org.gradle.api.plugins.*
 import org.gradle.testfixtures.ProjectBuilder
+import spock.lang.Specification
+import spock.lang.Unroll
 
 class JsPluginTest extends Specification {
   Project project
@@ -17,12 +21,13 @@ class JsPluginTest extends Specification {
     project = ProjectBuilder.builder().build()
   }
 
-  def "Applies node and grunt plugins"() {
+  def "Applies node and grunt/gulp plugins"() {
     expect: "a project without plugins applied"
       ! project.plugins.with {
         hasPlugin(BasePlugin)
         hasPlugin(GruntPlugin)
         hasPlugin(NodePlugin)
+        hasPlugin(GulpPlugin)
       }
 
     when: "js plugin is applied"
@@ -33,20 +38,26 @@ class JsPluginTest extends Specification {
         hasPlugin(BasePlugin)
         hasPlugin(GruntPlugin)
         hasPlugin(NodePlugin)
+        hasPlugin(GulpPlugin)
       }
   }
 
-  def "Sets up dependencies for GruntTasks"() {
+  @Unroll("Sets up dependencies for #tool tasks")
+  def "Sets up dependencies"() {
     when: "js plugin is applied"
       project.apply plugin: 'com.readytalk.js'
 
-    and: "we add a grunt task"
-      project.task('gruntBuild', type: GruntTask)
+    and: "we add a #tool task"
+      project.task("${tool}Build", type: toolClass)
 
-    then: "the grunt task depends on npmInstall and installGrunt"
-      def dependencies = project.tasks.withType(GruntTask)*.getDependsOn().flatten()
+    then: "the #tool task depends on npmInstall and install #tool"
+      def dependencies = project.tasks.withType(toolClass)*.getDependsOn().flatten()
       dependencies.contains('npmInstall')
-      dependencies.contains('installGrunt')
+      dependencies.contains("install${tool.capitalize()}".toString())
+
+    where:
+    tool << ['grunt', 'gulp']
+    toolClass << [GruntTask, GulpTask]
   }
 
   def "Sets project version from package.json"() {

@@ -55,7 +55,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.readytalk.gradle:gradle-readytalk-js:0.1.4-SNAPSHOT"
+    classpath "com.readytalk.gradle:gradle-readytalk-js:0.2.0-SNAPSHOT"
   }
 }
 
