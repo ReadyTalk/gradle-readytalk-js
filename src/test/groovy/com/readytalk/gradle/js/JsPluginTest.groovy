@@ -1,20 +1,21 @@
 package com.readytalk.gradle.js
 
-import com.moowork.gradle.grunt.GruntInstallTask
 import com.moowork.gradle.grunt.GruntPlugin
 import com.moowork.gradle.grunt.GruntTask
-import com.moowork.gradle.gulp.GulpInstallTask
 import com.moowork.gradle.gulp.GulpPlugin
 import com.moowork.gradle.gulp.GulpTask
 import com.moowork.gradle.node.NodePlugin
-import com.moowork.gradle.node.task.NpmInstallTask
+import nebula.test.PluginProjectSpec
+import nebula.test.ProjectSpec
 import org.gradle.api.*
 import org.gradle.api.plugins.*
 import org.gradle.testfixtures.ProjectBuilder
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class JsPluginTest extends Specification {
+class JsPluginTest extends PluginProjectSpec {
+  final String pluginName = 'com.readytalk.js'
   Project project
 
   def setup() {
@@ -79,5 +80,4 @@ class JsPluginTest extends Specification {
     then: "the gradle project version matches the version from package.json"
       project.version == packageJsonVersion
   }
-
 }
