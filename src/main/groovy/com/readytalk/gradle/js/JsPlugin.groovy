@@ -60,6 +60,9 @@ class JsPlugin implements Plugin<Project> {
 
   def void injectNodewSetup() {
     NodeExtension nodeExt = project.extensions.findByType(NodeExtension)
+    project.tasks.withType(SetupTask) {
+      it.outputs.file(project.file('nodew'))
+    }
     project.tasks.withType(SetupTask)*.doLast {
       if(project.generateNodeWrapper) {
         def wrapperFile = project.file('nodew')
@@ -78,6 +81,7 @@ node="\${NODE_HOME}/bin/node"
 npm="\${NPM_HOME}/npm-cli.js"
 
 if [[ ! -d "\${NODE_HOME}" || ! -d "\${LOCAL_NODE_BIN}" ]]; then
+  #TODO: Should this use absolute path?
   "${project.rootDir.absolutePath}/gradlew" "${project.path}:${SetupTask.NAME}" -PgenerateNodeWrapper=true
   exec -c "\${SCRIPT_PATH}/\$0" "\${@}"
 fi
