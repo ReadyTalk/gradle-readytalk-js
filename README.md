@@ -89,3 +89,13 @@ tests. The `gruntIntegTest` task should just run the tests and allow other
 parts of the Gradle build to bring up VMs or Docker containers or other testing
 infrastructure as necessary and clean them up once the `gruntIntegTest` task
 completes execution.
+
+## node wrapper script
+
+By default, the plugin also generates an executable nodew script as part of
+the nodeSetup task. This script will run commands in the context of the local
+node/npm install, and will regenerate them if needed. This script is intended
+for local developer convenience only, and should not be checked in as it relies
+on absolute paths. Set 'generateNodeWrapper=false' in gradle.properties to disable.
+
+

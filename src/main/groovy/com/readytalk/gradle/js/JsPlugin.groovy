@@ -80,7 +80,9 @@ LOCAL_NODE_BIN="${nodeExt.nodeModulesDir}/node_modules/.bin"
 node="\${NODE_HOME}/bin/node"
 npm="\${NPM_HOME}/npm-cli.js"
 
-if [[ ! -d "\${NODE_HOME}" || ! -d "\${LOCAL_NODE_BIN}" ]]; then
+mkdir -p node_modules/.bin
+
+if [[ ! -d "\${NODE_HOME}" ]]; then
   #TODO: Should this use absolute path?
   "${project.rootDir.absolutePath}/gradlew" "${project.path}:${SetupTask.NAME}" -PgenerateNodeWrapper=true
   exec -c "\${SCRIPT_PATH}/\$0" "\${@}"
