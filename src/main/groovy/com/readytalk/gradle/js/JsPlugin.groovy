@@ -72,7 +72,7 @@ PLATFORM="\$(uname -s | tr '[:upper:]' '[:lower:]')"
 SCRIPT_PATH="${project.projectDir}"
 
 #These can be overridden via environment variables if desired
-NODE_HOME="\${NODE_HOME:-\${SCRIPT_PATH}/build/nodejs/node-v${nodeExt.version}-\${PLATFORM}-x64}"
+NODE_HOME="\${NODE_HOME:-\${SCRIPT_PATH}/${project.buildDir}/nodejs/node-v${nodeExt.version}-\${PLATFORM}-x64}"
 NPM_HOME="\${NPM_HOME:-\${NODE_HOME}/lib/node_modules/npm/bin}"
 
 LOCAL_NODE_BIN="${nodeExt.nodeModulesDir}/node_modules/.bin"
