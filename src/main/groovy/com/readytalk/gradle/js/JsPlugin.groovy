@@ -48,7 +48,7 @@ class JsPlugin implements Plugin<Project> {
 
     project.node {
       version = '0.12.4'
-      npmVersion = '2.1.7'
+      npmVersion = '2.11.2'
       download = true
       workDir = project.file("${project.buildDir}/nodejs")
     }

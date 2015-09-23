@@ -2,6 +2,7 @@ package com.readytalk.gradle.js
 
 import com.moowork.gradle.node.NodeExtension
 import com.moowork.gradle.node.task.SetupTask
+import com.moowork.gradle.node.task.NpmSetupTask
 import nebula.test.IntegrationSpec
 import nebula.test.functional.ExecutionResult
 import org.gradle.BuildResult
@@ -20,14 +21,12 @@ class NodewTest extends IntegrationSpec {
     buildFile << applyPlugin(JsPlugin)
     buildFile << """
 project.tasks.${SetupTask.NAME}.doLast {
-  logger.quiet "NODE_VERSION=\${node.version}"
-  logger.quiet "NPM_VERSION=\${node.npmVersion}"
+  logger.quiet "NODE_VERSION=v\${node.version}"
 }"""
     ExecutionResult result = runTasksSuccessfully(SetupTask.NAME)
 
     then:
     fileExists('nodew')
     result.standardOutput.contains(nodew('node', '-v'))
-    result.standardOutput.contains(nodew('npm', '-v'))
   }
 }
