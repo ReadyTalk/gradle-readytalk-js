@@ -72,7 +72,7 @@ PLATFORM="\$(uname -s | tr '[:upper:]' '[:lower:]')"
 SCRIPT_PATH="${project.projectDir}"
 
 #These can be overridden via environment variables if desired
-NODE_HOME="\${NODE_HOME:-\${SCRIPT_PATH}/${project.buildDir}/nodejs/node-v${nodeExt.version}-\${PLATFORM}-x64}"
+NODE_HOME="\${NODE_HOME:-${project.buildDir}/nodejs/node-v${nodeExt.version}-\${PLATFORM}-x64}"
 NPM_HOME="\${NPM_HOME:-\${NODE_HOME}/lib/node_modules/npm/bin}"
 
 LOCAL_NODE_BIN="${nodeExt.nodeModulesDir}/node_modules/.bin"
@@ -80,7 +80,7 @@ LOCAL_NODE_BIN="${nodeExt.nodeModulesDir}/node_modules/.bin"
 node="\${NODE_HOME}/bin/node"
 npm="\${NPM_HOME}/npm-cli.js"
 
-mkdir -p node_modules/.bin
+mkdir -p \${SCRIPT_PATH}/node_modules/.bin
 
 if [[ ! -d "\${NODE_HOME}" ]]; then
   #TODO: Should this use absolute path?
