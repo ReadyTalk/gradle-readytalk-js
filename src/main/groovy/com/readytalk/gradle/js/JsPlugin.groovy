@@ -58,8 +58,16 @@ class JsPlugin implements Plugin<Project> {
     }
   }
 
+  private def relPath(File path) {
+    String relative = project.projectDir.toPath().relativize(path.toPath()).toString()
+    relative == '' ? '.' : './' + relative
+  }
+
   def void injectNodewSetup() {
     NodeExtension nodeExt = project.extensions.findByType(NodeExtension)
+
+    def baseDir = relPath(project.projectDir)
+
     project.tasks.withType(SetupTask) {
       it.outputs.file(project.file('nodew'))
     }
@@ -69,24 +77,30 @@ class JsPlugin implements Plugin<Project> {
         wrapperFile.text = """#!/usr/bin/env bash
 
 PLATFORM="\$(uname -s | tr '[:upper:]' '[:lower:]')"
-SCRIPT_PATH="${project.projectDir}"
+SCRIPT_PATH="${baseDir}"
 
-#These can be overridden via environment variables if desired
-NODE_HOME="\${NODE_HOME:-${project.buildDir}/nodejs/node-v${nodeExt.version}-\${PLATFORM}-x64}"
-NPM_HOME="\${NPM_HOME:-\${NODE_HOME}/lib/node_modules/npm/bin}"
+NODE_HOME="\${NODE_HOME:-${relPath(project.buildDir)}/nodejs/node-v${nodeExt.version}-\${PLATFORM}-x64}"
 
-LOCAL_NODE_BIN="${nodeExt.nodeModulesDir}/node_modules/.bin"
-
-node="\${NODE_HOME}/bin/node"
-npm="\${NPM_HOME}/npm-cli.js"
+LOCAL_NODE_BIN="${relPath(nodeExt.nodeModulesDir)}/node_modules/.bin"
 
 mkdir -p \${SCRIPT_PATH}/node_modules/.bin
 
 if [[ ! -d "\${NODE_HOME}" ]]; then
-  #TODO: Should this use absolute path?
-  "${project.rootDir.absolutePath}/gradlew" "${project.path}:${SetupTask.NAME}" -PgenerateNodeWrapper=true
+  "${relPath(project.rootDir)}/gradlew" "${project.tasks.findByName(SetupTask.NAME).path}" -PgenerateNodeWrapper=true
   exec -c "\${SCRIPT_PATH}/\$0" "\${@}"
 fi
+
+#Need full path for symlink to work properly
+if readlink --canonicalize &> /dev/null; then
+  NODE_HOME_FULL="\$(readlink --canonicalize "\${NODE_HOME}")"
+else
+  NODE_HOME_FULL="\$(cd "\${NODE_HOME}"; pwd)"
+fi
+
+NPM_HOME="\${NPM_HOME:-\${NODE_HOME_FULL}/lib/node_modules/npm/bin}"
+
+node="\${NODE_HOME_FULL}/bin/node"
+npm="\${NPM_HOME}/npm-cli.js"
 
 if [[ -x "\${node}" ]]; then
   ln -fs "\${node}" "\${LOCAL_NODE_BIN}/node"
