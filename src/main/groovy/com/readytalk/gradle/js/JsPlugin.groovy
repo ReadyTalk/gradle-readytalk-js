@@ -98,7 +98,7 @@ fi
 
 export PATH="\${LOCAL_NODE_BIN}:\${PATH}"
 
-\${@}
+"\${@}"
 """
         wrapperFile.executable = true
       }
