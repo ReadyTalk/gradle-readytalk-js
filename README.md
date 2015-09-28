@@ -40,6 +40,12 @@ Releases of this plugin are hosted on [Gradle's Plugin Portal][]. See the
 [Gradle's Plugin Portal]: https://plugins.gradle.org
 [ReadyTalk JS Plugin]: https://plugins.gradle.org/plugin/com.readytalk.js
 
+```groovy
+plugins {
+  id 'com.readytalk.js' version '0.4.0'
+}
+```
+
 ### Development SNAPSHOTs ###
 Development `SNAPSHOT`s for every commit and successful build on the master
 branch are published to the [OJO][] repostory. To use a `SNAPSHOT` version,
@@ -55,7 +61,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.readytalk.gradle:gradle-readytalk-js:0.3.2-SNAPSHOT"
+    classpath "com.readytalk.gradle:gradle-readytalk-js:0.4.0-SNAPSHOT"
   }
 }
 
