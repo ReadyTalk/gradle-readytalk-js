@@ -6,10 +6,9 @@ gradle-readytalk-js
 [![License](http://goo.gl/pPDj6N)](http://goo.gl/93tPwk)
 [![Download](http://goo.gl/OFVFVx)](http://goo.gl/wOAuo0)
 
-Conventions for ReadyTalk JavaScript projects using [node.js][] and [Grunt][].
+Conventions for ReadyTalk JavaScript projects using [node.js][]
 
 [node.js]: http://nodejs.org/
-[Grunt]: http://gruntjs.com/
 
 ## Goals ##
 The main goal of this project is to establish and maintain common conventions
@@ -22,16 +21,18 @@ plugin will wrap existing node.js-related plugins to provide:
 
 [gradle-readytalk-js]: http://oss.readytalk.com/gradle-readytalk-js/
 
-Most of the functionality this plugin applies is actually provided by two other
-plugins:
+Most of the functionality this plugin applies is actually provided by the
+`com.moowork.node` plugin:
 
 - [Gradle Node Plugin](https://github.com/srs/gradle-node-plugin)
-- [Gradle Grunt Plugin](https://github.com/srs/gradle-grunt-plugin)
 
 The long-term vision of this project is to merge all or most conventions and
 functionality contained here upstream and reorganize those projects into base /
 convention plugins in much the same way the out-of-the-box `java-base` and
 `java` Gradle plugins are set up.
+
+It's also expected that some of the functionality here might get migrated to the
+upstream plugin if it's universal enough.
 
 ## Usage ##
 Releases of this plugin are hosted on [Gradle's Plugin Portal][]. See the
@@ -42,7 +43,7 @@ Releases of this plugin are hosted on [Gradle's Plugin Portal][]. See the
 
 ```groovy
 plugins {
-  id 'com.readytalk.js' version '0.4.0'
+  id 'com.readytalk.js' version '1.0'
 }
 ```
 
@@ -61,7 +62,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.readytalk.gradle:gradle-readytalk-js:0.4.0-SNAPSHOT"
+    classpath "com.readytalk.gradle:gradle-readytalk-js:1.1-SNAPSHOT"
   }
 }
 
@@ -69,6 +70,25 @@ apply plugin: "com.readytalk.js"
 ```
 
 [OJO]: https://oss.jfrog.org
+
+## Calling into node-based tools
+This plugin extends the NodeTask type from `com.moowork.node` to simplify
+running CLI-based node tools like grunt. For example, to call into grunt:
+
+```groovy
+//Runs the 'ci' task in grunt
+task gruntCi(type: NodeTask) {
+  executable = 'grunt'
+  args = ['ci']
+}
+```
+
+It is expected that any node-based tool is included in your `package.json`,
+e.g. to use grunt you'll need to include the `grunt-cli` package as a
+devDependency, just like you would if you were using node directly.
+
+Don't try to manually install tools like grunt via gradle - it's much simpler
+to just include it as a normal devDependency and let `npm install` handle it.
 
 ## Philosophy on Gradle / Grunt Interaction ##
 It is strongly suggested you minimize the amount of interaction between Gradle
@@ -102,6 +122,4 @@ By default, the plugin also generates an executable nodew script as part of
 the nodeSetup task. This script will run commands in the context of the local
 node/npm install, and will regenerate them if needed. This script is intended
 for local developer convenience only, and should not be checked in as it relies
-on absolute paths. Set 'generateNodeWrapper=false' in gradle.properties to disable.
-
-
+on absolute paths. Set 'generateNodeWrapper=false' in gradle.properties to disable
