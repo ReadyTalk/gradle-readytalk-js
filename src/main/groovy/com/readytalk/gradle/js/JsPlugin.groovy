@@ -14,7 +14,7 @@ import org.gradle.api.plugins.ExtraPropertiesExtension
 
 class JsPlugin implements Plugin<Project> {
   static final String DEFAULT_NODE_VERSION = '0.12.7'
-  static final String DEFAULT_NPM_VERSION = '2.11.2'
+  static final String DEFAULT_NPM_VERSION = '2.14.4'
   private Project project
 
   @Override
@@ -43,17 +43,35 @@ class JsPlugin implements Plugin<Project> {
       project.version = getPackageJsonVersion(project)
     }
 
-    //Inject node_modules/.bin directory into path
-    //TODO: This really belongs upstream, since it hijacks the execOverrides block
-    def injectBinPath = { NodeTask task ->
+    injectBinPath()
+  }
+
+  private NodeExtension getNodeExt() {
+    project.extensions.findByType(NodeExtension)
+  }
+
+  String getNodeHome() {
+    "${nodeExt.workDir}/node-v${nodeExt.version}-${new PlatformHelper().osName}-x64"
+  }
+
+  def injectBinPath() {
+    project.tasks.withType(NodeTask).all { NodeTask task ->
+      //Inject node_modules/.bin directory into path
+      //TODO: This really belongs upstream, since it hijacks the execOverrides block
       task.setExecOverrides {
         it.environment.PATH = "${nodeHome}/bin:${nodeExt.nodeModulesDir}/node_modules/.bin:${System.env.PATH}"
       }
-    }
-    project.tasks.withType(NodeTask).all(injectBinPath)
-    project.tasks.withType(NodeTask).all { NodeTask task ->
+
+      //Inject syntactic sugar for calling node-based tools
       def ext = task.extensions.findByType(ExtraPropertiesExtension)
       ext.set('executable', '')
+
+      project.afterEvaluate {
+        if(ext.get('executable') && ext.get('executable') != 'npm') {
+          task.dependsOn project.tasks.findByName(NpmInstallTask.NAME)
+        }
+      }
+
       task.doFirst {
         if(ext.get('executable')) {
           def execName = ext.get('executable')
@@ -66,6 +84,7 @@ class JsPlugin implements Plugin<Project> {
             def hinter = [
                     'grunt': 'grunt-cli'
             ].withDefault {it}
+            //TODO: We could probably query npm or check package.json too
             throw new IllegalStateException("Can't find executable ${bin?.absolutePath} for task ${task.path}\n" +
                     "You may need to add ${hinter.get(execName)} to your package.json file, e.g.:\n" +
                     "./nodew npm install --save-dev ${hinter.get(execName)}")
@@ -73,14 +92,7 @@ class JsPlugin implements Plugin<Project> {
         }
       }
     }
-  }
 
-  private NodeExtension getNodeExt() {
-    project.extensions.findByType(NodeExtension)
-  }
-
-  String getNodeHome() {
-    "${nodeExt.workDir}/node-v${nodeExt.version}-${new PlatformHelper().osName}-x64"
   }
 
   private def relPath(File path) {
