@@ -22,6 +22,7 @@ class JsPluginTest extends PluginProjectSpec {
     project = ProjectBuilder.builder().build()
   }
 
+  @Ignore("Deprecated")
   def "Applies node and grunt/gulp plugins"() {
     expect: "a project without plugins applied"
       ! project.plugins.with {
@@ -43,6 +44,7 @@ class JsPluginTest extends PluginProjectSpec {
       }
   }
 
+  @Ignore("Deprecated")
   @Unroll("Sets up dependencies for #tool tasks")
   def "Sets up dependencies"() {
     when: "js plugin is applied"

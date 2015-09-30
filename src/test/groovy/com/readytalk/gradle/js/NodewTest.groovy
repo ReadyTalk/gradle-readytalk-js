@@ -8,6 +8,7 @@ import nebula.test.functional.ExecutionResult
 import org.gradle.BuildResult
 import org.gradle.api.Project
 
+//TODO: Rename
 class NodewTest extends IntegrationSpec {
   def "generates nodew wrapper defaulting to calling node"() {
     setup:
@@ -28,5 +29,21 @@ project.tasks.${SetupTask.NAME}.doLast {
     then:
     fileExists('nodew')
     result.standardOutput.contains(nodew('node', '-v'))
+  }
+
+  def "can execute node cli exec"() {
+    when:
+    buildFile << applyPlugin(JsPlugin)
+    buildFile << """
+def testTask = project.tasks.create(name: 'nodeExecTest', type: NodeTask)
+testTask.executable = 'npm'
+testTask.args = ['-v']
+"""
+    ExecutionResult result = runTasksSuccessfully('nodeExecTest')
+
+    then:
+    fileExists('node_modules/.bin/node')
+    fileExists('node_modules/.bin/npm')
+    result.standardOutput.contains(JsPlugin.DEFAULT_NPM_VERSION)
   }
 }
