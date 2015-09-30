@@ -43,7 +43,7 @@ Releases of this plugin are hosted on [Gradle's Plugin Portal][]. See the
 
 ```groovy
 plugins {
-  id 'com.readytalk.js' version '1.0'
+  id 'com.readytalk.js' version '1.0.0'
 }
 ```
 
@@ -62,7 +62,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.readytalk.gradle:gradle-readytalk-js:1.1-SNAPSHOT"
+    classpath "com.readytalk.gradle:gradle-readytalk-js:1.0.0-SNAPSHOT"
   }
 }
 

@@ -1,4 +1,4 @@
-* 1.0
+* 1.0.0
     - Removed dependency on upstream Gulp/Grunt plugins, now only uses main `com.moowork.node` plugin
     - Inject `node_modules/.bin` directory into PATH for NodeTask tasks
     - Inject optional `executable` property for NodeTasks
