@@ -1,20 +1,22 @@
 package com.readytalk.gradle.js
 
-import com.moowork.gradle.grunt.GruntInstallTask
-import com.moowork.gradle.grunt.GruntPlugin
-import com.moowork.gradle.grunt.GruntTask
-import com.moowork.gradle.gulp.GulpInstallTask
-import com.moowork.gradle.gulp.GulpPlugin
-import com.moowork.gradle.gulp.GulpTask
 import com.moowork.gradle.node.NodeExtension
+import com.moowork.gradle.node.NodePlugin
+import com.moowork.gradle.node.task.NodeTask
 import com.moowork.gradle.node.task.NpmInstallTask
+import com.moowork.gradle.node.task.NpmSetupTask
 import com.moowork.gradle.node.task.SetupTask
+import com.moowork.gradle.node.util.PlatformHelper
 import groovy.json.JsonSlurper
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.plugins.ExtraPropertiesExtension
 
 class JsPlugin implements Plugin<Project> {
+  static final String DEFAULT_NODE_VERSION = '0.12.7'
+  //TODO: We should probably just use the bundled npm version by default
+  static final String DEFAULT_NPM_VERSION = '2.11.3'
   private Project project
 
   @Override
@@ -22,40 +24,79 @@ class JsPlugin implements Plugin<Project> {
     this.project = project
 
     project.plugins.apply(BasePlugin)
-    project.plugins.apply(GruntPlugin)
-    project.plugins.apply(GulpPlugin)
+    project.plugins.apply(NodePlugin)
 
     if(!project.hasProperty('generateNodeWrapper')) {
       project.extensions.extraProperties.set('generateNodeWrapper', true)
     }
-    injectNodewSetup()
 
-    project.tasks.withType(GruntTask) {
-      dependsOn NpmInstallTask.NAME, GruntPlugin.GRUNT_INSTALL_NAME
-    }
-
-    project.tasks.withType(GruntInstallTask) {
-      dependsOn NpmInstallTask.NAME
-    }
-
-    project.tasks.withType(GulpTask) {
-      dependsOn NpmInstallTask.NAME, GulpPlugin.GULP_INSTALL_NAME
-    }
-
-    project.tasks.withType(GulpInstallTask) {
-      dependsOn NpmInstallTask.NAME
-    }
-
-    project.node {
-      version = '0.12.4'
-      npmVersion = '2.11.2'
+    nodeExt.with {
+      version = DEFAULT_NODE_VERSION
+      npmVersion = DEFAULT_NPM_VERSION
       download = true
       workDir = project.file("${project.buildDir}/nodejs")
     }
 
+    injectNodewSetup()
+
+    //TODO: We ought to read the package.json for references to supported node versions
+    //      and default to those if not specified in the gradle extension
     if (project.version == 'unspecified' && project.file('package.json').exists()) {
-      project.version = getPackageJsonVersion(project)
+      project.version = getPackageJsonVersion(project.file('package.json'))
     }
+
+    injectBinPath()
+  }
+
+  private NodeExtension getNodeExt() {
+    project.extensions.findByType(NodeExtension)
+  }
+
+  String getNodeHome() {
+    "${nodeExt.workDir}/node-v${nodeExt.version}-${new PlatformHelper().osName}-x64"
+  }
+
+  def injectBinPath() {
+    project.tasks.withType(NodeTask).all { NodeTask task ->
+      //Inject node_modules/.bin directory into path
+      //TODO: This really belongs upstream, since it hijacks the execOverrides block
+      //      I can't preserve the closure because the upstream plugin inexplicably marks it write-only
+      task.setExecOverrides {
+        it.environment.PATH =
+                "${nodeHome}/bin:${nodeExt.nodeModulesDir}/node_modules/.bin:${System.env.PATH}"
+      }
+
+      //Inject syntactic sugar for calling node-based tools
+      def ext = task.extensions.findByType(ExtraPropertiesExtension)
+      ext.set('executable', '')
+
+      project.afterEvaluate {
+        if(ext.get('executable') && ext.get('executable') != 'npm') {
+          task.dependsOn project.tasks.findByName(NpmInstallTask.NAME)
+        }
+      }
+
+      task.doFirst {
+        if(ext.get('executable')) {
+          def execName = ext.get('executable')
+          def bin = project.file(
+                  "${nodeExt.nodeModulesDir.absolutePath}/node_modules/.bin/${execName}"
+          )
+          if(bin?.exists()) {
+            task.script = bin
+          } else {
+            def hinter = [
+                    'grunt': 'grunt-cli'
+            ].withDefault {it}
+            //TODO: We could probably query npm or check package.json too
+            throw new IllegalStateException("Can't find executable ${bin?.absolutePath} for task ${task.path}\n" +
+                    "You may need to add ${hinter.get(execName)} to your package.json file, e.g.:\n" +
+                    "./nodew npm install --save-dev ${hinter.get(execName)}")
+          }
+        }
+      }
+    }
+
   }
 
   private def relPath(File path) {
@@ -64,15 +105,60 @@ class JsPlugin implements Plugin<Project> {
   }
 
   def void injectNodewSetup() {
-    NodeExtension nodeExt = project.extensions.findByType(NodeExtension)
+    project.tasks.withType(SetupTask).all { SetupTask task ->
+      task.inputs.properties([
+              nodeVersion: nodeExt.version,
+              npmVersion: nodeExt.npmVersion
+      ])
 
-    project.tasks.withType(SetupTask) {
-      it.outputs.file(project.file('nodew'))
-    }
-    project.tasks.withType(SetupTask)*.doLast {
-      if(project.generateNodeWrapper) {
+      def ext = task.extensions.extraProperties
+      task.outputs.file(project.file('nodew'))
+      task.outputs.upToDateWhen {
+        def nodewFile = project.file('nodew')
+        ext.set('nodewText', generateNodewText())
+        ext.get('nodewText') == (nodewFile?.exists() ? nodewFile.text : '')
+      }
+
+      task.doLast {
         def wrapperFile = project.file('nodew')
-        wrapperFile.text = """#!/usr/bin/env bash
+        wrapperFile.text = ext.get('nodewText')
+        wrapperFile.executable = true
+
+        //Faster and cleaner alternative to the upstream NpmSetupTask
+        if(nodeExt.npmVersion && nodeExt.npmVersion !=
+                getPackageJsonVersion(project.file("${nodeHome}/lib/node_modules/npm/package.json"))) {
+          project.exec {
+            workingDir = "${nodeHome}/lib"
+            commandLine = [
+                    "${nodeHome}/bin/node",
+                    "node_modules/npm/cli.js",
+                    "install",
+                    "npm@${nodeExt.npmVersion}"
+            ]
+          }
+        }
+
+        //Run the nodew script with a dummy command to generate symlinks
+        def initialize = "${wrapperFile.absolutePath} true".execute().text
+        if(!initialize.empty) {
+          project.logger.warn("WARNING: nodew script check failed, and may not work correctly!")
+        }
+
+      }
+    }
+
+    //Disable in favor of the injected setup above
+    project.tasks.withType(NpmSetupTask) { NpmSetupTask task ->
+      task.dependsOn project.tasks.findByName(SetupTask.NAME)
+      task.onlyIf {
+        logger.info "${NpmSetupTask.NAME} skipped: npm setup already handled by ${SetupTask.NAME}"
+        false
+      }
+    }
+  }
+
+  String generateNodewText() {
+"""#!/usr/bin/env bash
 
 #NOTE: This file is autogenerated by the com.readytalk.js gradle plugin
 
@@ -120,14 +206,11 @@ else
   "\${@}"
 fi
 """
-        wrapperFile.executable = true
-      }
-    }
   }
 
-  private static getPackageJsonVersion(final Project project) {
+  private static getPackageJsonVersion(File packageJson) {
     def packageSlurper = new JsonSlurper()
-    def packageJson = packageSlurper.parse(project.file('package.json'))
-    return packageJson.version
+    def json = packageSlurper.parse(packageJson)
+    return json.version
   }
 }
