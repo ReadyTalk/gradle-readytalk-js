@@ -1,9 +1,5 @@
 package com.readytalk.gradle.js
 
-import com.moowork.gradle.grunt.GruntPlugin
-import com.moowork.gradle.grunt.GruntTask
-import com.moowork.gradle.gulp.GulpPlugin
-import com.moowork.gradle.gulp.GulpTask
 import com.moowork.gradle.node.NodePlugin
 import nebula.test.PluginProjectSpec
 import nebula.test.ProjectSpec
@@ -27,9 +23,7 @@ class JsPluginTest extends PluginProjectSpec {
     expect: "a project without plugins applied"
       ! project.plugins.with {
         hasPlugin(BasePlugin)
-        hasPlugin(GruntPlugin)
         hasPlugin(NodePlugin)
-        hasPlugin(GulpPlugin)
       }
 
     when: "js plugin is applied"
@@ -38,9 +32,7 @@ class JsPluginTest extends PluginProjectSpec {
     then: "project has other js plugins applied"
       project.plugins.with {
         hasPlugin(BasePlugin)
-        hasPlugin(GruntPlugin)
         hasPlugin(NodePlugin)
-        hasPlugin(GulpPlugin)
       }
   }
 

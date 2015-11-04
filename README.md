@@ -123,3 +123,14 @@ the nodeSetup task. This script will run commands in the context of the local
 node/npm install, and will regenerate them if needed. This script is intended
 for local developer convenience only, and should not be checked in as it relies
 on absolute paths. Set 'generateNodeWrapper=false' in gradle.properties to disable
+
+## npm cache plugin (EXPERIMENTAL)
+
+This project includes an optional `com.readytalk.npmcache` plugin as well, which
+works somewhat similar to the npm-cache utility. As long as the package.json doesn't
+change, it will attempt to resolve node_modules from a local cached tarball instead,
+which is created the first time npm install completes for that package.json.
+
+```groovy
+apply plugin: 'com.readytalk.npmcache'
+```
