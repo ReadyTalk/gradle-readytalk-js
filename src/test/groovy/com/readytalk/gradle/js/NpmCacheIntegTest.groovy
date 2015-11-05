@@ -32,7 +32,8 @@ tasks.npmInstall.ext.cacheDir = file('${cache.absolutePath}')
 
      when:
      ExecutionResult result = runTasksSuccessfully('npmInstall')
-     ExecutionResult retry = runTasksSuccessfully('npmInstall')
+     ExecutionResult rebuild = runTasksSuccessfully('npmInstall')
+     ExecutionResult retry = runTasksSuccessfully('clean', 'npmInstall')
 
      then:
      result.wasExecuted('npmInstall')
@@ -41,8 +42,10 @@ tasks.npmInstall.ext.cacheDir = file('${cache.absolutePath}')
      fileExists('node_modules/require-dir')
      fileExists(tarball)
 
-     //NOTE: this will report up-to-date even if node_modules is deleted!
-     retry.wasUpToDate('npmInstall')
+     rebuild.wasUpToDate('npmInstall')
+     !(rebuild.standardOutput.contains(wrappedTaskPattern))
+
+     retry.wasExecuted('npmInstall')
      !(retry.standardOutput.contains(wrappedTaskPattern))
    }
 }
