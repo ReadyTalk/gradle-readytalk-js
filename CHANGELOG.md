@@ -1,3 +1,11 @@
+* 1.1.1
+    - Added integration test for npmcache plugin
+    - Ensure npmcache sets up node before running npm install
+
+* 1.1.0
+    - Added experimental com.readytalk.npmcache plugin
+      stores node_modules as tarball based on package.json
+
 * 1.0.0
     - Removed dependency on upstream Gulp/Grunt plugins, now only uses main `com.moowork.node` plugin
     - Inject `node_modules/.bin` directory into PATH for NodeTask tasks
