@@ -14,9 +14,9 @@ import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.ExtraPropertiesExtension
 
 class JsPlugin implements Plugin<Project> {
-  static final String DEFAULT_NODE_VERSION = '0.12.7'
+  static final String DEFAULT_NODE_VERSION = '4.2.3'
   //TODO: We should probably just use the bundled npm version by default
-  static final String DEFAULT_NPM_VERSION = '2.11.3'
+  static final String DEFAULT_NPM_VERSION = '2.14.15'
   private Project project
 
   @Override
@@ -196,11 +196,14 @@ if [[ -x "\${npm}" ]]; then
   ln -fs "\${npm}" "\${LOCAL_NODE_BIN}/npm"
 fi
 
-export PATH="\${LOCAL_NODE_BIN}:\${PATH}"
+FULL_LOCAL_BIN="\$(cd "\${LOCAL_NODE_BIN}"; pwd)"
+
+export PATH="\${FULL_LOCAL_BIN}:\$(echo -n "\$PATH" | sed -E "s|\${FULL_LOCAL_BIN}:?||")"
 
 if [[ \$# -eq 0 ]]; then
-  echo "Usage: ./nodew COMMAND"
-  echo "nodew is a wrapper around the project-local node/npm installation"
+  echo "Run single command: ./nodew COMMAND"
+  echo "Export environment: \\\$(./nodew sh -c 'echo export PATH=\\"\\\$PATH\\"')"
+  echo "\nnodew is a wrapper around the project-local node/npm installation"
   echo "e.g. './nodew node -v' will print the project-local node version"
 else
   "\${@}"

@@ -1,3 +1,9 @@
+* 1.2.0
+    - Added instructions to nodew for exporting PATH environment
+    - Use full path for node bin directory (more suitable for export)
+    - Bumped default node/npm versions to current stable releases
+      node 4.2.3 and npm 2.14.15
+
 * 1.1.1
     - Added integration test for npmcache plugin
     - Ensure npmcache sets up node before running npm install
