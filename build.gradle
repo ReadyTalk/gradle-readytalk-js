@@ -95,4 +95,4 @@ artifactory {
   }
 }
 
-wrapper.gradleVersion = '2.8'
+wrapper.gradleVersion = '2.9'
