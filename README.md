@@ -124,6 +124,10 @@ node/npm install, and will regenerate them if needed. This script is intended
 for local developer convenience only, and should not be checked in as it relies
 on absolute paths. Set 'generateNodeWrapper=false' in gradle.properties to disable
 
+For developer convenience, the nodew script can also be sourced from bash shells
+to import the PATH settings into the local session, similar to virtualenv for
+python.
+
 ## npm cache plugin (EXPERIMENTAL)
 
 This project includes an optional `com.readytalk.npmcache` plugin as well, which
