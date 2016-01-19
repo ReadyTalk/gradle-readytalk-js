@@ -8,6 +8,7 @@ import nebula.test.functional.ExecutionResult
 import org.gradle.BuildResult
 import org.gradle.api.Project
 import org.gradle.process.ExecResult
+import spock.lang.Ignore
 
 //TODO: Rename
 class NodewTest extends IntegrationSpec {
@@ -32,13 +33,31 @@ project.tasks.${SetupTask.NAME}.doLast {
     result.standardOutput.contains(nodew('node', '-v'))
   }
 
+  def "nodew can be sourced by bash"() {
+    when:
+    buildFile << applyPlugin(JsPlugin)
+    buildFile << """
+task bashTest(type: Exec) {
+  dependsOn '${SetupTask.NAME}'
+  commandLine = [
+    'bash', '-c',
+    'source nodew; node -v'
+  ]
+}
+"""
+
+    then:
+    ExecutionResult result = runTasksSuccessfully('bashTest')
+    result.standardOutput.contains(JsPlugin.DEFAULT_NODE_VERSION)
+  }
+
   def "nodew immediately uses correct npm version"() {
     when:
     buildFile << applyPlugin(JsPlugin)
     buildFile << """
 node {
-  version = '0.12.7'
-  npmVersion = '2.14.4'
+  version = '4.2.4'
+  npmVersion = '3.5.4'
 }
 def testTask = project.tasks.create(name: 'nodeExecTest', type: NodeTask)
 testTask.executable = 'npm'
@@ -49,6 +68,6 @@ testTask.args = ['-v']
     then:
     fileExists('node_modules/.bin/node')
     fileExists('node_modules/.bin/npm')
-    result.standardOutput.contains('2.14.4')
+    result.standardOutput.contains('3.5.4')
   }
 }

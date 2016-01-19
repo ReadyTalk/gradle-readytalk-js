@@ -13,6 +13,19 @@ class NpmCachePlugin implements Plugin<Project> {
   static final String NPM_INSTALL_WRAPPER = 'realNpmInstall'
   Project project
 
+  String resolveNpmVersion() {
+    String npmVersion = ''
+    if (!(project.node.npmVersion.isEmpty())) {
+      npmVersion = project.node.npmVersion
+    } else {
+      String nodeHome = project.plugins.findPlugin(JsPlugin).nodeHome
+      String npmPath = "${nodeHome}/lib/node_modules/npm/cli.js"
+      assert project.file(npmPath).exists()
+      npmVersion = "${nodeHome}/bin/node ${npmPath} -v".execute().text.trim()
+    }
+    return npmVersion
+  }
+
   void apply(Project project) {
     this.project = project
     project.plugins.apply(JsPlugin)
@@ -35,7 +48,7 @@ class NpmCachePlugin implements Plugin<Project> {
         ext.cacheDir = new File("${System.properties['user.home']}/.node_modules_cache")
 
         doLast {
-          String hash = project.node.version + "-" + project.node.npmVersion + "-" + sha1(project.file('package.json'))
+          String hash = project.node.version + "-" + resolveNpmVersion() + "-" + sha1(project.file('package.json'))
           File f = new File("${ext.cacheDir.absolutePath}/${hash}.tar.gz")
           if (f.exists()) {
             exec {
