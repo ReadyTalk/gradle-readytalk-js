@@ -27,7 +27,7 @@ tasks.npmInstall.ext.cacheDir = file('${cache.absolutePath}')
 
      packagejson << json.toString()
 
-     String tarball = "npmcache/${JsPlugin.DEFAULT_NODE_VERSION}-${JsPlugin.DEFAULT_NPM_VERSION}-${NpmCachePlugin.sha1(packagejson)}.tar.gz"
+     String tarball = "npmcache/${JsPlugin.DEFAULT_NODE_VERSION}-2.14.12-${NpmCachePlugin.sha1(packagejson)}.tar.gz"
      String wrappedTaskPattern = "Executing task ':${NpmCachePlugin.NPM_INSTALL_WRAPPER}'"
 
      when:
