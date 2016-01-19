@@ -8,6 +8,7 @@ import nebula.test.functional.ExecutionResult
 import org.gradle.BuildResult
 import org.gradle.api.Project
 import org.gradle.process.ExecResult
+import spock.lang.Ignore
 
 //TODO: Rename
 class NodewTest extends IntegrationSpec {
@@ -32,13 +33,13 @@ project.tasks.${SetupTask.NAME}.doLast {
     result.standardOutput.contains(nodew('node', '-v'))
   }
 
+  @Ignore('No longer specifying npm version explicitly by default')
   def "nodew immediately uses correct npm version"() {
     when:
     buildFile << applyPlugin(JsPlugin)
     buildFile << """
 node {
-  version = '0.12.7'
-  npmVersion = '2.14.4'
+  version = '4.2.4'
 }
 def testTask = project.tasks.create(name: 'nodeExecTest', type: NodeTask)
 testTask.executable = 'npm'

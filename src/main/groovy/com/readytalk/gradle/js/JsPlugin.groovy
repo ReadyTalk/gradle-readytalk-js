@@ -14,9 +14,8 @@ import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.ExtraPropertiesExtension
 
 class JsPlugin implements Plugin<Project> {
-  static final String DEFAULT_NODE_VERSION = '4.2.3'
-  //TODO: We should probably just use the bundled npm version by default
-  static final String DEFAULT_NPM_VERSION = '2.14.15'
+  //TODO: Option for "latest LTS"
+  static final String DEFAULT_NODE_VERSION = '4.2.4'
   private Project project
 
   @Override
@@ -32,7 +31,7 @@ class JsPlugin implements Plugin<Project> {
 
     nodeExt.with {
       version = DEFAULT_NODE_VERSION
-      npmVersion = DEFAULT_NPM_VERSION
+      npmVersion = '' //By default, just use whatever comes bundled with node
       download = true
       workDir = project.file("${project.buildDir}/nodejs")
     }
@@ -116,7 +115,10 @@ class JsPlugin implements Plugin<Project> {
       task.outputs.upToDateWhen {
         def nodewFile = project.file('nodew')
         ext.set('nodewText', generateNodewText())
-        ext.get('nodewText') == (nodewFile?.exists() ? nodewFile.text : '')
+        ext.get('nodewText') == (nodewFile?.exists() ? nodewFile.text : '') &&
+                project.file("${nodeHome}/bin/node").exists() &&
+                ( nodeExt.npmVersion == '' || //Either using default npm version or check that explicit version is correct
+                        "${nodeHome}/bin/node ${nodeHome}/lib/node_modules/npm/cli.js -v".execute().text == nodeExt.npmVersion )
       }
 
       task.doLast {
